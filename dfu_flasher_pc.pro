@@ -14,7 +14,7 @@ SOURCES += main.cpp\
 	 mainwindow.cpp \
     comm.cpp \
     usb/dfu/usb_dfu.cpp \
-    usb/usb.cpp
+    usb/usbd.cpp
 
 HEADERS  += mainwindow.h \
     comm.h \
@@ -22,11 +22,12 @@ HEADERS  += mainwindow.h \
     usb/dfu/usb_dfu_defs.h \
     usb/dfu/usb_dfu_error.h \
     usb/dfu/usb_dfu.h \
-    usb/usb_defs.h \
     config.h \
     delay.h \
     error.h \
-	 usb/usb.h
+    usb/usbd.h \
+    usb/dfu.h \
+    usb/usb.h
 
 FORMS    += mainwindow.ui
 

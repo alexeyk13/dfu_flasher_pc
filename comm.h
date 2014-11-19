@@ -11,13 +11,13 @@
 #include <QColor>
 #include "common.h"
 
-class Usb;
+class USBD;
 
 class Comm : public QObject
 {
     Q_OBJECT
 private:
-    Usb* usb;
+    USBD* usbd;
 
 protected:
     void info(const QString& text, const QColor& color = Qt::black) {log(LOG_TYPE_DEFAULT, text, color);}
@@ -30,9 +30,9 @@ public:
     explicit Comm(QObject *parent = 0);
     virtual ~Comm();
 
-    bool isConnected();
-    bool connect();
-    void disconnect();
+    bool isActive();
+    bool open();
+    void close();
     void test(const QString& str);
 
 signals:

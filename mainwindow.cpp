@@ -86,72 +86,32 @@ void MainWindow::log(LOG_TYPE type, const QString &text, const QColor &color)
     }
 }
 
-void MainWindow::connected()
+void MainWindow::flash()
 {
-
-}
-
-void MainWindow::disconnected()
-{
-
-}
-
-void MainWindow::on_bConnect_clicked()
-{
-    try
-    {
-        info(comm->connect() ? tr("Radex connected\n") : tr("Radex not found\n"));
-    }
-    catch (Exception& e)
-    {
-        error(e.what() + "\n");
-    }
-    catch (...)
-    {
-        error(tr("Unhandled exception\n"));
-    }
-}
-
-void MainWindow::on_bDisconnect_clicked()
-{
-    try
-    {
-        comm->disconnect();
-        info(tr("Radex disconnect\n"));
-    }
-    catch (Exception& e)
-    {
-        error(e.what() + "\n");
-    }
-    catch (...)
-    {
-        error(tr("Unhandled exception\n"));
-    }
-}
-
-void MainWindow::on_bSend_clicked()
-{
-    try
-    {
-//        comm->test(ui->eSendText->text());
-//        info(QString(tr("CDC send: %1\n")).arg(ui->eSendText->text()));
-    }
-    catch (Exception& e)
-    {
-        error(e.what() + "\n");
-    }
-    catch (...)
-    {
-        error(tr("Unhandled exception\n"));
-    }
+//    if
+//    info(comm->open() ? tr("USB DFU device connected\n") : tr("USB DFU device not found\n"));
 }
 
 void MainWindow::on_bFlash_clicked()
 {
     try
     {
-//        comm->test(ui->eSendText->text());
-//        info(QString(tr("CDC send: %1\n")).arg(ui->eSendText->text()));
+        if (comm->open())
+        {
+            info(tr("USB DFU device connected\n"));
+            try
+            {
+                flash();
+                comm->close();
+            }
+            catch (...)
+            {
+                comm->close();
+                throw;
+            }
+        }
+        else
+            warning(tr("USB DFU device not found\n"));
     }
     catch (Exception& e)
     {

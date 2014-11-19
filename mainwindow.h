@@ -34,6 +34,7 @@ protected:
     void warning(const QString& text) {log(LOG_TYPE_WARNING, text, Qt::black);}
     void error(const QString& text) {log(LOG_TYPE_ERROR, text, Qt::black);}
     void debug(const QString& text) {log(LOG_TYPE_DEBUG, text, Qt::black);}
+    void flash();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -41,12 +42,7 @@ public:
 
 public slots:
     void log(LOG_TYPE type, const QString& text, const QColor& color);
-    void connected();
-    void disconnected();
 private slots:
-    void on_bConnect_clicked();
-    void on_bDisconnect_clicked();
-    void on_bSend_clicked();
     void on_bFlash_clicked();
 };
 

@@ -5,33 +5,38 @@
 */
 
 #include "comm.h"
-#include "usb/usb.h"
+#include "usb/usbd.h"
 #include "config.h"
 #include "error.h"
 
 Comm::Comm(QObject *parent) :
     QObject(parent)
 {
-    usb = new Usb();
+    usbd = new USBD();
 }
 
 Comm::~Comm()
 {
-    delete usb;
+    delete usbd;
 }
 
-bool Comm::isConnected()
+bool Comm::isActive()
 {
-    return false;
+    return usbd->isActive();
 }
 
-bool Comm::connect()
+bool Comm::open()
 {
-    return false;
+    if (usbd->isActive())
+        return true;
+    if (!usbd->open(VID, PID))
+        return false;
+    return true;
 }
 
-void Comm::disconnect()
+void Comm::close()
 {
+    usbd->close();
 }
 
 void Comm::test(const QString &str)

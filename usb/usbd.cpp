@@ -1,4 +1,10 @@
-#include "usb.h"
+/*
+    USB DFU Flasher PC part (cross-platform)
+    Copyright (c) 2014, Alexey Kramarenko
+    All rights reserved.
+*/
+
+#include "usbd.h"
 
 #if defined(_WIN32)
 #include "libusb.h"
@@ -6,25 +12,25 @@
 #include <libusb-1.0/libusb.h>
 #endif
 
-struct libusb_context* Usb::ctx = NULL;
-int Usb::instanceCount = 0;
-QSet<struct libusb_device*> Usb::devs;
+struct libusb_context* USBD::ctx = NULL;
+int USBD::instanceCount = 0;
+QSet<struct libusb_device*> USBD::devs;
 
-Usb::Usb() :
+USBD::USBD() :
 	handle(NULL)
 {
 	if (instanceCount++ == 0)
         checkStatus(libusb_init(&ctx));
 }
 
-Usb::~Usb()
+USBD::~USBD()
 {
 	close();
     if (ctx && --instanceCount == 0)
         libusb_exit(ctx);
 }
 
-void Usb::checkStatus(int res)
+void USBD::checkStatus(int res)
 {
 	switch (res)
 	{
@@ -72,7 +78,7 @@ void Usb::checkStatus(int res)
 	}
 }
 
-struct libusb_device* Usb::getFirstFree(int vid, int pid)
+struct libusb_device* USBD::getFirstFree(int vid, int pid)
 {
 	libusb_device* dev = NULL;
 	libusb_device **list;
@@ -102,11 +108,11 @@ struct libusb_device* Usb::getFirstFree(int vid, int pid)
 	return dev;
 }
 
-bool Usb::isAvailable(int vid, int pid)
+bool USBD::isAvailable(int vid, int pid)
 {
 	bool res = false;
-	Usb usb;
-	struct libusb_device* dev = usb.getFirstFree(vid, pid);
+    USBD usbd;
+    struct libusb_device* dev = usbd.getFirstFree(vid, pid);
 	if (dev)
 	{
 		devs.remove(dev);
@@ -116,7 +122,7 @@ bool Usb::isAvailable(int vid, int pid)
 	return res;
 }
 
-bool Usb::openIfPresent(int vid, int pid)
+bool USBD::open(int vid, int pid)
 {
 	if (handle == NULL)
 	{
@@ -130,7 +136,7 @@ bool Usb::openIfPresent(int vid, int pid)
 	return handle != NULL;
 }
 
-void Usb::close()
+void USBD::close()
 {
 	if (handle)
 	{
@@ -140,7 +146,7 @@ void Usb::close()
 	}
 }
 
-void Usb::controlReq(const SETUP &setup, QByteArray &data, int timeout)
+void USBD::controlReq(const SETUP &setup, QByteArray &data, int timeout)
 {
 	if (handle == NULL)
 		throw ErrorLibUsbNoDevice();
@@ -152,7 +158,7 @@ void Usb::controlReq(const SETUP &setup, QByteArray &data, int timeout)
 		data.resize(res);
 }
 
-void Usb::bulkWrite(const QByteArray &data, int ep, int timeout)
+void USBD::bulkWrite(const QByteArray &data, int ep, int timeout)
 {
 	if (handle == NULL)
 		throw ErrorLibUsbNoDevice();
@@ -162,7 +168,7 @@ void Usb::bulkWrite(const QByteArray &data, int ep, int timeout)
 		throw ErrorLibUsbIO();
 }
 
-QByteArray Usb::bulkRead(int ep, int maxSize, int timeout)
+QByteArray USBD::bulkRead(int ep, int maxSize, int timeout)
 {
 	if (handle == NULL)
 		throw ErrorLibUsbNoDevice();
