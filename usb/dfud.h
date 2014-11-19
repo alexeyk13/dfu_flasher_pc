@@ -98,8 +98,10 @@ class DFUD : public QObject
     Q_OBJECT
 private:
     USBD* usbd;
+    int dlnum;
 protected:
     int getStatus();
+    void dnLoad(const QByteArray& buf);
 public:
     explicit DFUD(QObject *parent = 0);
     ~DFUD();
@@ -109,6 +111,7 @@ public:
     bool isActive();
 
     int test();
+    void write(const QByteArray& buf);
 
 signals:
 

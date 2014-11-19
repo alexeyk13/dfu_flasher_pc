@@ -87,8 +87,22 @@ int DFUD::getStatus()
     return data[4];
 }
 
+void DFUD::dnLoad(const QByteArray& buf)
+{
+    SETUP setup;
+    setup.bmRequestType = BM_REQUEST_DIRECTION_HOST_TO_DEVICE | BM_REQUEST_TYPE_CLASS | BM_REQUEST_RECIPIENT_INTERFACE;
+    setup.bRequest = DFU_DNLOAD;
+    setup.wValue = dlnum;
+    setup.wIndex = 0;
+    setup.wLength = buf.size();
+    QByteArray localBuf(buf);
+    usbd->controlReq(setup, localBuf);
+}
+
 bool DFUD::open(int vid, int pid)
 {
+    if (!usbd->isActive())
+        dlnum = 0;
     if (!usbd->open(vid, pid))
         return false;
     return true;
@@ -107,4 +121,16 @@ bool DFUD::isActive()
 int DFUD::test()
 {
     return getStatus();
+}
+
+void DFUD::write(const QByteArray &buf)
+{
+    //transfer
+    dnLoad(buf);
+    while (getStatus() == DFU_STATE_DNBUSY) {}
+    //transfer complete
+    dnLoad(QByteArray());
+    getStatus();
+    //manifest state
+    while (getStatus() == DFU_STATE_MANIFEST) {}
 }
