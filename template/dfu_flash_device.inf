@@ -1,0 +1,80 @@
+;
+;
+; Installs WinUsb
+;
+
+[Version]
+DriverVer=07/28/2010
+Signature="$CHICAGO$"
+Class=USB
+ClassGUID={36FC9E60-C465-11CF-8056-444553540000}
+Provider  = %ManufacturerName%
+
+; ========== Manufacturer/Models sections ===========
+
+[Manufacturer]
+%ManufacturerName% = USBDevices,NTx86,NTamd64
+
+[USBDevices.NTx86]
+%DeviceName% =USB_Install, USB\VID_ABBA&PID_F001
+
+[USBDevices.NTamd64]
+%DeviceName% =USB_Install, USB\VID_ABBA&PID_F001
+
+; ========== Class definition ===========
+
+[ClassInstall32]
+AddReg = ClassInstall_AddReg
+
+[ClassInstall_AddReg]
+HKR,,,,%ClassName%
+HKR,,NoInstallClass,,1
+HKR,,IconPath,%REG_MULTI_SZ%,"%systemroot%\system32\setupapi.dll,-20"
+HKR,,LowerLogoVersion,,5.2
+
+; =================== Installation ===================
+
+[USB_Install]
+Include = winusb.inf
+Needs   = WINUSB.NT
+
+[USB_Install.Services]
+Include=winusb.inf
+Addservice = WinUSB, 0x00000002, WinUSB_ServiceInstall
+
+[WinUSB_ServiceInstall]
+DisplayName    = %DeviceName%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\WinUSB.sys
+
+[USB_Install.Wdf]
+KmdfService=WINUSB, WinUsb_Install
+
+[WinUsb_Install]
+KmdfLibraryVersion=1.9
+
+[USB_Install.HW]
+AddReg=Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,%DeviceGUID%
+
+[USB_Install.CoInstallers]
+AddReg=CoInstallers_AddReg
+%11%/WinUSBCoInstaller2.dll
+%11%/WdfCoInstaller01009.dll
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WdfCoInstaller01009.dll,WdfCoInstaller","WinUSBCoInstaller2.dll"
+
+
+; =================== Strings ===================
+
+[Strings]
+ManufacturerName="REx OS"
+ClassName="Universal Serial Bus devices"
+DeviceName="USB DFU device"
+DeviceGUID="{fb360c45-2d97-43e4-a006-1e6d7c369682}"
+REG_MULTI_SZ = 0x00010000
