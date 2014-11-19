@@ -5,38 +5,39 @@
 */
 
 #include "comm.h"
-#include "usb/usbd.h"
+#include "usb/dfud.h"
 #include "config.h"
 #include "error.h"
 
 Comm::Comm(QObject *parent) :
     QObject(parent)
 {
-    usbd = new USBD();
+    dfud = new DFUD();
 }
 
 Comm::~Comm()
 {
-    delete usbd;
+    delete dfud;
 }
 
 bool Comm::isActive()
 {
-    return usbd->isActive();
+    return dfud->isActive();
 }
 
 bool Comm::open()
 {
-    if (usbd->isActive())
-        return true;
-    if (!usbd->open(VID, PID))
+    if (!dfud->open(VID, PID))
         return false;
+    info("DFU test\n");
+    hint(QString("DFU status: %1\n").arg(dfud->test()));
+    info("DFU test ok\n");
     return true;
 }
 
 void Comm::close()
 {
-    usbd->close();
+    dfud->close();
 }
 
 void Comm::test(const QString &str)

@@ -7,8 +7,6 @@
 #include "usb_dfu.h"
 #include "../usb.h"
 //#include "../../../delay.h"
-#include "usb_dfu_defs.h"
-#include "usb_dfu_error.h"
 /*
 UsbDfu::UsbDfu(int vid, int pid, int ep, PhoneObject* parent) :
 	Port(parent),

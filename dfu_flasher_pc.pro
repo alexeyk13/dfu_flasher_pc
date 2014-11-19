@@ -14,20 +14,20 @@ SOURCES += main.cpp\
 	 mainwindow.cpp \
     comm.cpp \
     usb/dfu/usb_dfu.cpp \
-    usb/usbd.cpp
+    usb/usbd.cpp \
+    usb/dfud.cpp
 
 HEADERS  += mainwindow.h \
     comm.h \
     common.h \
-    usb/dfu/usb_dfu_defs.h \
-    usb/dfu/usb_dfu_error.h \
     usb/dfu/usb_dfu.h \
     config.h \
     delay.h \
     error.h \
     usb/usbd.h \
     usb/dfu.h \
-    usb/usb.h
+    usb/usb.h \
+    usb/dfud.h
 
 FORMS    += mainwindow.ui
 

@@ -11,13 +11,13 @@
 #include <QColor>
 #include "common.h"
 
-class USBD;
+class DFUD;
 
 class Comm : public QObject
 {
     Q_OBJECT
 private:
-    USBD* usbd;
+    DFUD* dfud;
 
 protected:
     void info(const QString& text, const QColor& color = Qt::black) {log(LOG_TYPE_DEFAULT, text, color);}
