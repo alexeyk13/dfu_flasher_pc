@@ -16,72 +16,86 @@
 
 class ErrorUsb: public Exception
 {
-    virtual QString what() const throw()  {return QObject::tr("Generic USB error");}
+public:
+    ErrorUsb() throw() :Exception() {str = (QObject::tr("Generic USB error"));}
 };
 
 class ErrorLibUsb: public ErrorUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb error");}
+public:
+    ErrorLibUsb() throw() :ErrorUsb() {str = (QObject::tr("Libusb error"));}
 };
 
 class ErrorLibUsbIO: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - IO error");}
+public:
+    ErrorLibUsbIO() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - IO error"));}
 };
 
 class ErrorLibUsbInvalidParam: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Invalid parameter");}
+public:
+    ErrorLibUsbInvalidParam() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Invalid parameter"));}
 };
 
 class ErrorLibUsbAccessDenied: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Access denied");}
+public:
+    ErrorLibUsbAccessDenied() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Access denied"));}
 };
 
 class ErrorLibUsbNoDevice: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - No device");}
+public:
+    ErrorLibUsbNoDevice() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - No device"));}
 };
 
 class ErrorLibUsbNotFound: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Entity not found");}
+public:
+    ErrorLibUsbNotFound() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Entity not found"));}
 };
 
 class ErrorLibUsbBusy: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Busy");}
+public:
+    ErrorLibUsbBusy() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Busy"));}
 };
 
 class ErrorLibUsbTimeout: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Timeout");}
+public:
+    ErrorLibUsbTimeout() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Timeout"));}
 };
 
 class ErrorLibUsbOverflow: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Overflow");}
+public:
+    ErrorLibUsbOverflow() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Overflow"));}
 };
 
 class ErrorLibUsbPipe: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Pipe error");}
+public:
+    ErrorLibUsbPipe() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Pipe error"));}
 };
 
 class ErrorLibUsbInterrupted: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - System call interrupted");}
+public:
+    ErrorLibUsbInterrupted() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - System call interrupted"));}
 };
 
 class ErrorLibUsbOutOfMemory: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Out of memory");}
+public:
+    ErrorLibUsbOutOfMemory() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Out of memory"));}
 };
 
 class ErrorLibUsbNotSupported: public ErrorLibUsb
 {
-    virtual QString what() const throw()  {return QObject::tr("Libusb - Operation not supported");}
+public:
+    ErrorLibUsbNotSupported() throw() :ErrorLibUsb() {str = (QObject::tr("Libusb - Operation not supported"));}
 };
 
 

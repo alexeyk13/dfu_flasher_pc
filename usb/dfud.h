@@ -12,82 +12,98 @@
 
 class ErrorDfu: public Exception
 {
-    virtual QString what() const throw()  {return QObject::tr("Generic DFU error");}
+public:
+    ErrorDfu() throw() :Exception() {str = (QObject::tr("Generic DFU error"));}
 };
 
 class ErrorDfuTarget: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: File is not targeted for use by this device");}
+public:
+    ErrorDfuTarget() throw() :ErrorDfu() {str = (QObject::tr("DFU: File is not targeted for use by this device"));}
 };
 
 class ErrorDfuFile: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: File is for this device but fails some vendor-specific verification test");}
+public:
+    ErrorDfuFile() throw() :ErrorDfu() {str = (QObject::tr("DFU: File is for this device but fails some vendor-specific verification test"));}
 };
 
 class ErrorDfuWrite: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Device is unable to write memory");}
+public:
+    ErrorDfuWrite() throw() :ErrorDfu() {str = (QObject::tr("DFU: Device is unable to write memory"));}
 };
 
 class ErrorDfuErase: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Memory erase function failed");}
+public:
+    ErrorDfuErase() throw() :ErrorDfu() {str = (QObject::tr("DFU: Memory erase function failed"));}
 };
 
 class ErrorDfuCheckErased: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Memory erase check failed");}
+public:
+    ErrorDfuCheckErased() throw() :ErrorDfu() {str = (QObject::tr("DFU: Memory erase check failed"));}
 };
 
 class ErrorDfuProg: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Program memory function failed");}
+public:
+    ErrorDfuProg() throw() :ErrorDfu() {str = (QObject::tr("DFU: Program memory function failed"));}
 };
 
 class ErrorDfuVerify: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Programmed memory failed verification");}
+public:
+    ErrorDfuVerify() throw() :ErrorDfu() {str = (QObject::tr("DFU: Programmed memory failed verification"));}
 };
 
 class ErrorDfuAddress: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Cannot program memory due to received address that is out of range");}
+public:
+    ErrorDfuAddress() throw() :ErrorDfu() {str = (QObject::tr("DFU: Cannot program memory due to received address that is out of range"));}
 };
 
 class ErrorDfuNotDone: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Received DFU_DNLOAD with wLength = 0, but device does not think it has all of the data yet");}
+public:
+    ErrorDfuNotDone() throw() :ErrorDfu() {str = (QObject::tr("DFU: Received DFU_DNLOAD with wLength = 0, but device does not think it has all of the data yet"));}
 };
 
 class ErrorDfuFirmware: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Device’s firmware is corrupt. It cannot return to run-time (non-DFU) operations");}
+public:
+    ErrorDfuFirmware() throw() :ErrorDfu() {str = (QObject::tr("DFU: Device’s firmware is corrupt. It cannot return to run-time (non-DFU) operations"));}
 };
 
 class ErrorDfuVendor: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: iString indicates a vendor-specific error");}
+public:
+    ErrorDfuVendor() throw() :ErrorDfu() {str = (QObject::tr("DFU: iString indicates a vendor-specific error"));}
 };
 
 class ErrorDfuUsbReset: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Device detected unexpected USB reset signaling");}
+public:
+    ErrorDfuUsbReset() throw() :ErrorDfu() {str = (QObject::tr("DFU: Device detected unexpected USB reset signaling"));}
 };
 
 class ErrorDfuPor: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Device detected unexpected power on reset");}
+public:
+    ErrorDfuPor() throw() :ErrorDfu() {str = (QObject::tr("DFU: Device detected unexpected power on reset"));}
 };
 
 class ErrorDfuUnknown: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Something went wrong, but the device does not know what it was");}
+public:
+    ErrorDfuUnknown() throw() :ErrorDfu() {str = (QObject::tr("DFU: Something went wrong, but the device does not know what it was"));}
 };
 
 class ErrorDfuStalled: public ErrorDfu
 {
-    virtual QString what() const throw()  {return QObject::tr("DFU: Device stalled an unexpected request");}
+public:
+    ErrorDfuStalled() throw() :ErrorDfu() {str = (QObject::tr("DFU: Device stalled an unexpected request"));}
 };
 
 
@@ -98,10 +114,12 @@ class DFUD : public QObject
     Q_OBJECT
 private:
     USBD* usbd;
-    int dlnum;
+    int dlnum, ulnum;
 protected:
+    int getState();
     int getStatus();
     void dnLoad(const QByteArray& buf);
+    QByteArray upLoad();
 public:
     explicit DFUD(QObject *parent = 0);
     ~DFUD();
@@ -112,6 +130,7 @@ public:
 
     int test();
     void write(const QByteArray& buf);
+    QByteArray read();
 
 signals:
 

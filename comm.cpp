@@ -37,6 +37,11 @@ bool Comm::open()
     dfud->write(QString("test").toLocal8Bit());
     hint(QString("DFU status: %1\n").arg(dfud->test()));
     info("DFU test write ok\n");
+
+    info("DFU test read\n");
+    hint(QString::fromLocal8Bit(dfud->read()).append("\n"));
+    hint(QString("DFU status: %1\n").arg(dfud->test()));
+    info("DFU test read ok\n");
     return true;
 }
 

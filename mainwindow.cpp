@@ -115,6 +115,7 @@ void MainWindow::on_bFlash_clicked()
     }
     catch (Exception& e)
     {
+        info("here\n");
         error(e.what() + "\n");
     }
     catch (...)

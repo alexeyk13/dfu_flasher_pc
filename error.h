@@ -14,107 +14,117 @@
 /* base */
 class Exception
 {
+protected:
+    QString str;
 public:
-    Exception() throw() {}
+    Exception() throw() {str = (QObject::tr("Internal error"));}
     virtual ~Exception() throw() {}
-    virtual QString what() throw() {return QObject::tr("Internal error");}
+    virtual QString what() throw() {return str;}
 };
 
 class ErrorNotActive: public Exception
 {
-    virtual QString what() throw() {return QObject::tr("Not active");}
+public:
+    ErrorNotActive() throw() :Exception() {str = (QObject::tr("Not active"));}
 };
 
 /* cancel class */
 class ErrorCancel: public Exception
 {
-    virtual QString what() throw() {return QObject::tr("Action cancelled");}
+public:
+    ErrorCancel() throw() :Exception() {str = (QObject::tr("Action cancelled"));}
 };
 
 /* file errors */
 class ErrorFile: public Exception
 {
-    virtual QString what() throw() {return QObject::tr("Generic file error");}
+public:
+    ErrorFile() throw() :Exception() {str = (QObject::tr("Generic file error"));}
 };
 
 class ErrorFileNotFound: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File not found");}
+public:
+    ErrorFileNotFound() throw() :ErrorFile() {str = (QObject::tr("File not found"));}
 };
 
 class ErrorFileOpen: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File open error");}
+public:
+    ErrorFileOpen() throw() :ErrorFile() {str = (QObject::tr("File open error"));}
 };
 
 class ErrorFileCreate: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File create error");}
+public:
+    ErrorFileCreate() throw() :ErrorFile() {str = (QObject::tr("File create error"));}
 };
 
 class ErrorFileWrite: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File write error");}
+public:
+    ErrorFileWrite() throw() :ErrorFile() {str = (QObject::tr("File write error"));}
 };
 
 class ErrorFileRead: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File read error");}
+public:
+    ErrorFileRead() throw() :ErrorFile() {str = (QObject::tr("File read error"));}
 };
 
 class ErrorFileCrc: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File crc error");}
+public:
+    ErrorFileCrc() throw() :ErrorFile() {str = (QObject::tr("File CRC error"));}
 };
 
 class ErrorFileCopy: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File copy error");}
+public:
+    ErrorFileCopy() throw() :ErrorFile() {str = (QObject::tr("File copy error"));}
 };
 
 class ErrorFileRemove: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("File remove error");}
+public:
+    ErrorFileRemove() throw() :ErrorFile() {str = (QObject::tr("File remove error"));}
 };
 
 class ErrorFolderOpen: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("Folder open error");}
+public:
+    ErrorFolderOpen() throw() :ErrorFile() {str = (QObject::tr("Folder open error"));}
 };
 
 class ErrorFolderRemove: public ErrorFile
 {
-    virtual QString what() throw() {return QObject::tr("Folder remove error");}
+public:
+    ErrorFolderRemove() throw() :ErrorFile() {str = (QObject::tr("Folder remove error"));}
 };
 
 /* network errors */
 class ErrorNetwork: public Exception
 {
-    virtual QString what() throw() {return QObject::tr("Generic network error");}
+public:
+    ErrorNetwork() throw() :Exception() {str = (QObject::tr("Generic network error"));}
 };
 
 class ErrorNetworkNotAccessible: public ErrorNetwork
 {
-    virtual QString what() throw() {return QObject::tr("Network is not accessible");}
+public:
+    ErrorNetworkNotAccessible() throw() :ErrorNetwork() {str = (QObject::tr("Network is not accessible"));}
 };
 
 class ErrorNetworkAuthenticationRequired: public ErrorNetwork
 {
-    virtual QString what() throw() {return QObject::tr("Authentication required");}
+public:
+    ErrorNetworkAuthenticationRequired() throw() :ErrorNetwork() {str = (QObject::tr("Authentication required"));}
 };
 
 class ErrorNetworkForbidden: public ErrorNetwork
 {
-    virtual QString what() throw() {return QObject::tr("Forbidden");}
-};
-
-class ErrorNetworkOther: public ErrorNetwork
-{
-private:
-    int code;
 public:
-    ErrorNetworkOther(int code) throw() : ErrorNetwork(), code(code) {}
-    virtual QString what() throw() {return QString(QObject::tr("Generic network error: %1")).arg(code); }
+    ErrorNetworkForbidden() throw() :ErrorNetwork() {str = (QObject::tr("Forbidden"));}
 };
 
 #endif // ERROR_H

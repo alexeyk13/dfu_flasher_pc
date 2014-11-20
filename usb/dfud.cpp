@@ -19,6 +19,22 @@ DFUD::~DFUD()
     delete usbd;
 }
 
+int DFUD::getState()
+{
+    SETUP setup;
+    setup.bmRequestType = BM_REQUEST_DIRECTION_DEVICE_TO_HOST | BM_REQUEST_TYPE_CLASS | BM_REQUEST_RECIPIENT_INTERFACE;
+    setup.bRequest = DFU_GETSTATE;
+    setup.wValue = 0;
+    setup.wIndex = 0;
+    setup.wLength = 1;
+    QByteArray data;
+    usbd->controlReq(setup, data);
+    if (data.size() != 1)
+        throw ErrorDfu();
+
+    return data[0];
+}
+
 int DFUD::getStatus()
 {
     SETUP setup;
@@ -92,19 +108,33 @@ void DFUD::dnLoad(const QByteArray& buf)
     SETUP setup;
     setup.bmRequestType = BM_REQUEST_DIRECTION_HOST_TO_DEVICE | BM_REQUEST_TYPE_CLASS | BM_REQUEST_RECIPIENT_INTERFACE;
     setup.bRequest = DFU_DNLOAD;
-    setup.wValue = dlnum;
+    setup.wValue = dlnum++;
     setup.wIndex = 0;
     setup.wLength = buf.size();
     QByteArray localBuf(buf);
     usbd->controlReq(setup, localBuf);
 }
 
+QByteArray DFUD::upLoad()
+{
+    SETUP setup;
+    setup.bmRequestType = BM_REQUEST_DIRECTION_DEVICE_TO_HOST | BM_REQUEST_TYPE_CLASS | BM_REQUEST_RECIPIENT_INTERFACE;
+    setup.bRequest = DFU_UPLOAD;
+    setup.wValue = ulnum++;
+    setup.wIndex = 0;
+    setup.wLength = DFU_BLOCK_SIZE + 64 + 1;
+    QByteArray buf;
+    usbd->controlReq(setup, buf);
+    return buf;
+}
+
 bool DFUD::open(int vid, int pid)
 {
     if (!usbd->isActive())
-        dlnum = 0;
+        dlnum = ulnum = 0;
     if (!usbd->open(vid, pid))
         return false;
+    //TODO: clr state
     return true;
 }
 
@@ -131,6 +161,9 @@ void DFUD::write(const QByteArray &buf)
     //transfer complete
     dnLoad(QByteArray());
     getStatus();
-    //manifest state
-    while (getStatus() == DFU_STATE_MANIFEST) {}
+}
+
+QByteArray DFUD::read()
+{
+    return upLoad();
 }
