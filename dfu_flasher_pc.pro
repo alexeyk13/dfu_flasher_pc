@@ -13,14 +13,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
 	 mainwindow.cpp \
     comm.cpp \
-    usb/dfu/usb_dfu.cpp \
     usb/usbd.cpp \
     usb/dfud.cpp
 
 HEADERS  += mainwindow.h \
     comm.h \
     common.h \
-    usb/dfu/usb_dfu.h \
     config.h \
     delay.h \
     error.h \
