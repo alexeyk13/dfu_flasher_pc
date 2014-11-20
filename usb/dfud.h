@@ -118,6 +118,7 @@ private:
 protected:
     int getState();
     int getStatus();
+    void clrStatus();
     void dnLoad(const QByteArray& buf);
     QByteArray upLoad();
 public:
@@ -128,7 +129,6 @@ public:
     void close();
     bool isActive();
 
-    int test();
     void write(const QByteArray& buf);
     QByteArray read();
 

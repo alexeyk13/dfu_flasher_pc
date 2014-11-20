@@ -10,6 +10,19 @@
 #include <QObject>
 #include <QColor>
 #include "common.h"
+#include "error.h"
+
+class ErrorProtocol: public Exception
+{
+public:
+    ErrorProtocol() throw() :Exception() {str = (QObject::tr("Generic protocol error"));}
+};
+
+class ErrorProtocolInvalidResponse: public ErrorProtocol
+{
+public:
+    ErrorProtocolInvalidResponse() throw() :ErrorProtocol() {str = (QObject::tr("Protocol invalid response"));}
+};
 
 class DFUD;
 
@@ -26,6 +39,8 @@ protected:
     void error(const QString& text) {log(LOG_TYPE_ERROR, text, Qt::black);}
     void debug(const QString& text) {log(LOG_TYPE_DEBUG, text, Qt::black);}
 
+    void cmdReq(unsigned char cmd, unsigned int param1, unsigned int param2, QByteArray data = QByteArray());
+
 public:
     explicit Comm(QObject *parent = 0);
     virtual ~Comm();
@@ -33,6 +48,9 @@ public:
     bool isActive();
     bool open();
     void close();
+
+    void cmdVersion(int& loader, int& protocol);
+    void cmdLeave();
     void test(const QString& str);
 
 signals:

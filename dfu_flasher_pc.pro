@@ -25,7 +25,8 @@ HEADERS  += mainwindow.h \
     usb/usbd.h \
     usb/dfu.h \
     usb/usb.h \
-    usb/dfud.h
+    usb/dfud.h \
+    proto.h
 
 FORMS    += mainwindow.ui
 

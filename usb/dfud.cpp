@@ -103,6 +103,18 @@ int DFUD::getStatus()
     return data[4];
 }
 
+void DFUD::clrStatus()
+{
+    SETUP setup;
+    setup.bmRequestType = BM_REQUEST_DIRECTION_HOST_TO_DEVICE | BM_REQUEST_TYPE_CLASS | BM_REQUEST_RECIPIENT_INTERFACE;
+    setup.bRequest = DFU_CLRSTATUS;
+    setup.wValue = 0;
+    setup.wIndex = 0;
+    setup.wLength = 0;
+    QByteArray buf;
+    usbd->controlReq(setup, buf);
+}
+
 void DFUD::dnLoad(const QByteArray& buf)
 {
     SETUP setup;
@@ -134,7 +146,7 @@ bool DFUD::open(int vid, int pid)
         dlnum = ulnum = 0;
     if (!usbd->open(vid, pid))
         return false;
-    //TODO: clr state
+    clrStatus();
     return true;
 }
 
@@ -148,11 +160,6 @@ bool DFUD::isActive()
     return usbd->isActive();
 }
 
-int DFUD::test()
-{
-    return getStatus();
-}
-
 void DFUD::write(const QByteArray &buf)
 {
     //transfer
@@ -160,7 +167,7 @@ void DFUD::write(const QByteArray &buf)
     while (getStatus() == DFU_STATE_DNBUSY) {}
     //transfer complete
     dnLoad(QByteArray());
-    getStatus();
+    //skip manifestation phase
 }
 
 QByteArray DFUD::read()

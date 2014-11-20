@@ -88,8 +88,9 @@ void MainWindow::log(LOG_TYPE type, const QString &text, const QColor &color)
 
 void MainWindow::flash()
 {
-//    if
-//    info(comm->open() ? tr("USB DFU device connected\n") : tr("USB DFU device not found\n"));
+
+    comm->test("");
+
 }
 
 void MainWindow::on_bFlash_clicked()
@@ -98,11 +99,18 @@ void MainWindow::on_bFlash_clicked()
     {
         if (comm->open())
         {
-            info(tr("USB DFU device connected\n"));
+            info(tr("DFU device connected\n"));
             try
             {
+                int loader, protocol;
+                comm->cmdVersion(loader, protocol);
+                info(QString(QObject::tr("Loader version: %1.%2\n")).arg(loader >> 8).arg(loader & 0xff, 2, 10, QChar('0')));
+                info(QString(QObject::tr("Protocol version: %1.%2\n")).arg(protocol >> 8).arg(protocol & 0xff, 2, 10, QChar('0')));
                 flash();
+                info(tr("Flash complete, resetting device\n"));
+                comm->cmdLeave();
                 comm->close();
+                info(tr("DFU device disconnected\n"));
             }
             catch (...)
             {
@@ -115,7 +123,6 @@ void MainWindow::on_bFlash_clicked()
     }
     catch (Exception& e)
     {
-        info("here\n");
         error(e.what() + "\n");
     }
     catch (...)
