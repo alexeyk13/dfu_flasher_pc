@@ -44,6 +44,7 @@ public slots:
     void log(LOG_TYPE type, const QString& text, const QColor& color);
 private slots:
     void on_bFlash_clicked();
+    void on_bSelectFile_clicked();
 };
 
 #endif // MAINWINDOW_H

@@ -23,12 +23,13 @@ Comm::~Comm()
 
 void Comm::cmdReq(unsigned char cmd, unsigned int param1, unsigned int param2, QByteArray data)
 {
-    QByteArray buf(sizeof(PROTO_REQ) + data.size(), 0);
+    QByteArray buf(sizeof(PROTO_REQ), 0);
     PROTO_REQ* proto = reinterpret_cast<PROTO_REQ*>(buf.data());
     proto->cmd = cmd;
+    proto->data_size = data.size();
     proto->param1 = param1;
     proto->param2 = param2;
-    dfud->write(buf);
+    dfud->write(buf + data);
 }
 
 bool Comm::isActive()
@@ -64,11 +65,21 @@ void Comm::cmdLeave()
     cmdReq(PROTO_CMD_LEAVE, 0, 0);
 }
 
-void Comm::test(const QString &str)
+QByteArray Comm::cmdRead(unsigned int addr, unsigned int size)
 {
+    cmdReq(PROTO_CMD_READ, addr, size);
+    QByteArray buf(dfud->read());
+    if (static_cast<unsigned int>(buf.size()) < size)
+        throw ErrorProtocolInvalidResponse();
+    return buf;
+}
 
-/*    info("DFU test read\n");
-    hint(QString::fromLocal8Bit(dfud->read()).append("\n"));
-    hint(QString("DFU status: %1\n").arg(dfud->test()));
-    info("DFU test read ok\n");*/
+void Comm::cmdWrite(unsigned int addr, const QByteArray &buf)
+{
+    cmdReq(PROTO_CMD_WRITE, addr, buf.size(), buf);
+}
+
+void Comm::cmdErase(unsigned int addr, unsigned int size)
+{
+    cmdReq(PROTO_CMD_ERASE, addr, size);
 }

@@ -51,7 +51,9 @@ public:
 
     void cmdVersion(int& loader, int& protocol);
     void cmdLeave();
-    void test(const QString& str);
+    QByteArray cmdRead(unsigned int addr, unsigned int size);
+    void cmdWrite(unsigned int addr, const QByteArray& buf);
+    void cmdErase(unsigned int addr, unsigned int size);
 
 signals:
     void log(LOG_TYPE type, const QString& text, const QColor& color);
