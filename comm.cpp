@@ -9,6 +9,7 @@
 #include "config.h"
 #include "error.h"
 #include "proto.h"
+#include <QFile>
 
 Comm::Comm(QObject *parent) :
     QObject(parent)
@@ -82,4 +83,35 @@ void Comm::cmdWrite(unsigned int addr, const QByteArray &buf)
 void Comm::cmdErase(unsigned int addr, unsigned int size)
 {
     cmdReq(PROTO_CMD_ERASE, addr, size);
+}
+
+void Comm::flash(const QString &fileName, unsigned int addr, unsigned int size)
+{
+    unsigned int i;
+    QFile fwFile(fileName);
+    if (!fwFile.open(QIODevice::ReadOnly))
+        throw ErrorFileOpen();
+    QByteArray fw(fwFile.readAll());
+    fwFile.close();
+
+    info(QString(tr("Erasing: 0x%1-0x%2")).arg(addr, 8, 16, QChar('0')).arg(addr + size, 8, 16, QChar('0')));
+    for (i = 0; i * DFU_BLOCK_SIZE < size; ++i)
+    {
+        cmdErase(i * DFU_BLOCK_SIZE + addr, DFU_BLOCK_SIZE);
+        if (i && ((i % REFRESH_RATE) == 0))
+            info(".");
+    }
+    info("\n");
+
+    info(QString(tr("Flashing: 0x%1")).arg(addr, 8, 16, QChar('0')));
+    for (i = 0; i * DFU_BLOCK_SIZE < static_cast<unsigned int>(fw.size()); ++i)
+    {
+        QByteArray chunk(fw.mid(i * DFU_BLOCK_SIZE, DFU_BLOCK_SIZE));
+        if (static_cast<unsigned int>(chunk.size()) < DFU_BLOCK_SIZE)
+            chunk += QByteArray(DFU_BLOCK_SIZE - chunk.size(), 0x0);
+        cmdWrite(i * DFU_BLOCK_SIZE + addr, chunk);
+        if (i && ((i % REFRESH_RATE) == 0))
+            info(".");
+    }
+    info("\n");
 }

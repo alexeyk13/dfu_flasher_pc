@@ -13,8 +13,6 @@
 #include "error.h"
 #include <QFileDialog>
 
-const int REFRESH_RATE =                         10;
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -90,36 +88,6 @@ void MainWindow::log(LOG_TYPE type, const QString &text, const QColor &color)
     }
 }
 
-void MainWindow::flash()
-{
-    unsigned int addr = ui->eAddress->text().toInt(NULL, 16);
-    unsigned int size = ui->eSize->text().toInt(NULL, 16);
-    unsigned int i;
-    QFile fwFile(ui->eFile->text());
-    if (!fwFile.open(QIODevice::ReadOnly))
-        throw ErrorFileOpen();
-    QByteArray fw(fwFile.readAll());
-    fwFile.close();
-
-    info(QString(tr("Erasing: 0x%1-0x%2")).arg(addr, 8, 16, QChar('0')).arg(addr + size, 8, 16, QChar('0')));
-    for (i = 0; i * DFU_BLOCK_SIZE < size; ++i)
-    {
-        comm->cmdErase(i * DFU_BLOCK_SIZE + addr, DFU_BLOCK_SIZE);
-        if (i && ((i % REFRESH_RATE) == 0))
-            info(".");
-    }
-    info("\n");
-
-    info(QString(tr("Flashing: 0x%1")).arg(addr, 8, 16, QChar('0')));
-    for (i = 0; i * DFU_BLOCK_SIZE < static_cast<unsigned int>(fw.size()); ++i)
-    {
-        comm->cmdWrite(i * DFU_BLOCK_SIZE + addr, fw.mid(i * DFU_BLOCK_SIZE, DFU_BLOCK_SIZE));
-        if (i && ((i % REFRESH_RATE) == 0))
-            info(".");
-    }
-    info("\n");
-}
-
 void MainWindow::on_bFlash_clicked()
 {
     try
@@ -133,7 +101,7 @@ void MainWindow::on_bFlash_clicked()
                 comm->cmdVersion(loader, protocol);
                 info(QString(QObject::tr("Loader version: %1.%2\n")).arg(loader >> 8).arg(loader & 0xff));
                 info(QString(QObject::tr("Protocol version: %1.%2\n")).arg(protocol >> 8).arg(protocol & 0xff));
-                flash();
+                comm->flash(ui->eFile->text(), ui->eAddress->text().toInt(NULL, 16), ui->eSize->text().toInt(NULL, 16));
                 hint(tr("Flash complete, resetting device\n"));
                 comm->cmdLeave();
                 comm->close();

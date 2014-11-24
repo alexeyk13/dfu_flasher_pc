@@ -34,7 +34,6 @@ protected:
     void warning(const QString& text) {log(LOG_TYPE_WARNING, text, Qt::black);}
     void error(const QString& text) {log(LOG_TYPE_ERROR, text, Qt::black);}
     void debug(const QString& text) {log(LOG_TYPE_DEBUG, text, Qt::black);}
-    void flash();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

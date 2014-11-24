@@ -55,6 +55,8 @@ public:
     void cmdWrite(unsigned int addr, const QByteArray& buf);
     void cmdErase(unsigned int addr, unsigned int size);
 
+    void flash(const QString& fileName, unsigned int addr, unsigned int size);
+
 signals:
     void log(LOG_TYPE type, const QString& text, const QColor& color);
 
