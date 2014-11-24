@@ -17,5 +17,6 @@ const unsigned int VID =                                            0xABBA;
 const unsigned int PID =                                            0xF001;
 
 const unsigned int DFU_BLOCK_SIZE =                                 128;
+const int REFRESH_RATE =                                            10;
 
 #endif // CONFIG_H
